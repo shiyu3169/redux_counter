@@ -11,18 +11,34 @@ const CounterComponent = ({count, increment, decrement}) =>
         <button onClick={increment}>Increment</button>
     </div>
 
+const dispatcherToPropertyMapper = dispatch => ({
+    increment: () => dispatch({type:'INCREMENT', step: 10}),
+    decrement: () => dispatch({type:'DECREMENT', step: 20})
+})
+
 const stateToPropertyMapper = state => ({
     count: state.count 
 })
 
-const CounterContainer =  connect(stateToPropertyMapper)(CounterComponent)
+const CounterContainer =  connect(stateToPropertyMapper, dispatcherToPropertyMapper)(CounterComponent)
 
 let initialState = {
     count: 234
 }
 
-const reducer = (state = initialState) => {
-    return state
+const reducer = (state = initialState, action) => {
+    switch(action.type) {
+        case 'INCREMENT':
+            return {
+                count: state.count + action.step
+             }
+        case 'DECREMENT': 
+            return {
+                count: state.count - action.step
+            }
+        default:
+            return state
+    }
 }
 
 let store = createStore(reducer)
